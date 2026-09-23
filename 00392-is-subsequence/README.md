@@ -21,22 +21,20 @@ public class Solution {
 ```csharp
 public class Solution {
     public bool IsSubsequence(string s, string t) {
-        var nxt = new Dictionary<char, int>[t.Length + 1];
-        nxt[t.Length] = new Dictionary<char, int>();
-
-        for (int i = t.Length - 1; i >= 0; i--) {
-            nxt[i] = new Dictionary<char, int>(nxt[i + 1]);
-            nxt[i][t[i]] = i + 1;
+        var dict = new Dictionary<char, int>[t.Length + 1];
+        dict[t.Length] = new Dictionary<char, int>();
+        for (var i = t.Length - 1; i >= 0; i--) {
+            dict[i] = new Dictionary<char, int>(dict[i + 1]);
+            dict[i][t[i]] = i + 1;
         }
 
-        int position = 0;
-        foreach (char c in s) {
-            if (nxt[position].TryGetValue(c, out int nextPosition)) {
-                position = nextPosition;
-            } else {
-                return false;
-            }
+        var j = 0;
+        foreach (var c in s) {
+            // note: TryGetValue でいけたわ
+            if (!dict[j].ContainsKey(c)) return false;
+            j = dict[j][c];
         }
+
         return true;
     }
 }
